@@ -31,10 +31,14 @@ def home():
 @app.route("/predict", methods=['POST'])
 @cross_origin()
 def predictRoute():
-    image = request.json['image']
-    decodeImage(image, clApp.filename)
-    result = clApp.classifier.predictiondogcat()
-    return jsonify(result)
+    try:
+        image = request.json['image']
+        decodeImage(image, clApp.filename)
+        result = clApp.classifier.predict_pulmonary_fibrosis()
+        return jsonify(result)
+    except Exception as e:
+        error_response = [{"error": f"Request processing failed: {str(e)}"}]
+        return jsonify(error_response), 500
 
 clApp = ClientApp()
 #port = int(os.getenv("PORT"))
